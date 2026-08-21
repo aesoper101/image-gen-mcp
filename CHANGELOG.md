@@ -1,5 +1,13 @@
 # @inferai/image-gen-mcp
 
+## 1.0.3
+
+### Patch Changes
+
+- [`88c0c58`](https://github.com/aesoper101/image-gen-mcp/commit/88c0c585e389572e4ede1e0ffd0a4592ae185aa6) Thanks [@aesoper101](https://github.com/aesoper101)! - Fix the CI-published tarball missing the build output (`dist/`), which made `npx @inferai/image-gen-mcp` unusable (MCP clients reported `-32000`):
+  
+  `changesets/action/publish` ignores the pack artifact when a custom `script` input is set and runs that script from a checkout that never contains `dist/` (gitignored, never built there) — so `changeset publish` packed a tarball without the build output. Removed the custom `script` from the publish job so the action publishes the pack job's tarballs via `--from-pack-dir`.
+
 ## 1.0.2
 
 ### Patch Changes
