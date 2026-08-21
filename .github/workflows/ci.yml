@@ -21,13 +21,14 @@ jobs:
       contents: read # to check out repo (actions/checkout)
     steps:
       - name: Check out repo
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install pnpm and Node.js and Install dependencies
-        uses: pnpm/setup@c8e77b72cd6022852162c92aa10e7e72b7209c9b # v2
+        uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
         with:
           cache: true
 
+      - run: node --version
       - name: Lint and format check
         run: pnpm check
 

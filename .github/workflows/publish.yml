@@ -22,19 +22,20 @@ jobs:
       contents: read # to check out repo (actions/checkout)
     steps:
       - name: Check out repo
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false # recommended: do not persist git credentials on disk
 
       - name: Install pnpm and Node.js and Install dependencies
-        uses: pnpm/setup@c8e77b72cd6022852162c92aa10e7e72b7209c9b # v2.0.0
+        uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
         with:
           cache: true
 
+      - run: node --version
 
       - name: Select Changesets mode
         id: select-mode
-        uses: changesets/action/select-mode@22ccf9aa43179fe9e27dc62e575971d28cce197c # v2.0.0
+        uses: changesets/action/select-mode@8488615a623b1b9c987934bb89eae8af6a946ac1 # v2.1.1
 
   version:
     if: needs.select-mode.outputs.mode == 'version'
@@ -47,23 +48,20 @@ jobs:
       pull-requests: write # to create pull request (changesets/action/version)
     steps:
       - name: Check out repo
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false # recommended: do not persist git credentials on disk
 
       - name: Install pnpm and Node.js and Install dependencies
-        uses: pnpm/setup@c8e77b72cd6022852162c92aa10e7e72b7209c9b # v2.0.0
+        uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
         with:
-          runtime: node@24
           cache: true
+
+      - run: node --version
 
       - name: Version packages
         id: version
-        uses: changesets/action/version@22ccf9aa43179fe9e27dc62e575971d28cce197c # v2.0.0
-        with:
-          # `pnpm run` is required: bare `pnpm version` hits the pnpm builtin
-          # (which wants a semver bump argument), not the npm script
-          script: pnpm run version
+        uses: changesets/action/version@8488615a623b1b9c987934bb89eae8af6a946ac1 # v2.1.1
 
   pack:
     if: needs.select-mode.outputs.mode == 'publish'
@@ -75,14 +73,16 @@ jobs:
       contents: read # to check out repo (actions/checkout)
     steps:
       - name: Check out repo
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false # recommended: do not persist git credentials on disk
 
       - name: Install pnpm and Node.js and Install dependencies
-        uses: pnpm/setup@c8e77b72cd6022852162c92aa10e7e72b7209c9b # v2.0.0
+        uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
         with:
           cache: true
+
+      - run: node --version
 
       - name: Quality gates before publish (lint + tests must be green)
         run: pnpm check && pnpm test
@@ -92,7 +92,7 @@ jobs:
 
       - name: Pack packages
         id: pack
-        uses: changesets/action/pack@22ccf9aa43179fe9e27dc62e575971d28cce197c # v2.0.0
+        uses: changesets/action/pack@8488615a623b1b9c987934bb89eae8af6a946ac1 # v2.1.1
         with:
           publish-plan-artifact-id: ${{ needs.select-mode.outputs.publish-plan-artifact-id }}
 
@@ -104,12 +104,12 @@ jobs:
       id-token: write # for trusted publishing (changesets/action/publish)
     steps:
       - name: Check out repo
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false # recommended: do not persist git credentials on disk
 
       - name: Install pnpm and Node.js
-        uses: pnpm/setup@c8e77b72cd6022852162c92aa10e7e72b7209c9b # v2.0.0
+        uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
         with:
           cache: true
 
@@ -119,6 +119,6 @@ jobs:
       # published tarball loses the build output (src/run.ts). The default CLI
       # invocation publishes the pack job's tarballs via `--from-pack-dir`.
       - name: Publish packages
-        uses: changesets/action/publish@22ccf9aa43179fe9e27dc62e575971d28cce197c # v2.0.0
+        uses: changesets/action/publish@8488615a623b1b9c987934bb89eae8af6a946ac1 # v2.1.1
         with:
           pack-dir-artifact-id: ${{ needs.pack.outputs.pack-dir-artifact-id }}
