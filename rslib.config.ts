@@ -5,7 +5,7 @@ export default defineConfig({
     {
       syntax: ['node 22'],
       dts: true,
-      banner: { js: '#!/usr/bin/env node' },
+      // shebang comes from src/index.ts:1, preserved by rslib; a banner here would duplicate it
     },
   ],
 });
