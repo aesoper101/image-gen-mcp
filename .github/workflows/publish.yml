@@ -114,8 +114,11 @@ jobs:
           cache: true
 
 
+      # No custom `script`: when one is set, changesets/action/publish ignores the
+      # pack artifact and runs the script from a checkout without `dist/`, so the
+      # published tarball loses the build output (src/run.ts). The default CLI
+      # invocation publishes the pack job's tarballs via `--from-pack-dir`.
       - name: Publish packages
         uses: changesets/action/publish@22ccf9aa43179fe9e27dc62e575971d28cce197c # v2.0.0
         with:
           pack-dir-artifact-id: ${{ needs.pack.outputs.pack-dir-artifact-id }}
-          script: pnpm release
