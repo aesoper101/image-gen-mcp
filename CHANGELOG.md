@@ -1,5 +1,13 @@
 # @inferai/image-gen-mcp
 
+## 1.1.0
+
+### Minor Changes
+
+- [`4398cc8`](https://github.com/aesoper101/image-gen-mcp/commit/4398cc8893dda4a8f50e21a35e917ddfb84b7d93) Thanks [@aesoper101](https://github.com/aesoper101)! - Remove `IMAGE_MCP_PROVIDERS` / `--providers`: providers are now auto-discovered from configured API keys only — a provider is enabled iff `IMAGE_MCP_<ID>_API_KEY` (or `--<id>-api-key`) is set, no provider list to maintain. Default priority is the registry order (overridable per provider with `IMAGE_MCP_<ID>_PRIORITY`).
+  
+  README: configuration examples are now stdio MCP client setups (Claude Code / Claude Desktop) with separate Windows and Linux/macOS snippets.
+
 ## 1.0.3
 
 ### Patch Changes
