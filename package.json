@@ -1,6 +1,6 @@
 {
   "name": "@inferai/image-gen-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Multi-provider AI image generation MCP server (stdio) for agents without image capabilities. Unified ImageProvider abstraction, priority-based failover with retries, OpenAI-compatible + Google providers.",
   "keywords": [
     "mcp",
