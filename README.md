@@ -25,16 +25,15 @@ pnpm install && pnpm build
 node dist/index.js
 ```
 
-MCP client configuration example (Claude Code `~/.claude.json` / desktop app):
+Configure it as a stdio MCP server in your client. **Windows** — Claude Desktop: `%APPDATA%\Claude\claude_desktop_config.json`; Claude Code: `~/.claude.json` (`C:\Users\<user>\.claude.json`). `cmd /c` is required to resolve `npx`:
 
 ```json
 {
   "mcpServers": {
     "image-gen": {
-      "command": "npx",
-      "args": ["@inferai/image-gen-mcp"],
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@inferai/image-gen-mcp"],
       "env": {
-        "IMAGE_MCP_PROVIDERS": "openai,zhipu",
         "IMAGE_MCP_OPENAI_API_KEY": "sk-...",
         "IMAGE_MCP_ZHIPU_API_KEY": "..."
       }
@@ -42,6 +41,25 @@ MCP client configuration example (Claude Code `~/.claude.json` / desktop app):
   }
 }
 ```
+
+**Linux / macOS** — Claude Desktop: `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `~/.config/Claude/claude_desktop_config.json` (Linux); Claude Code: `~/.claude.json`:
+
+```json
+{
+  "mcpServers": {
+    "image-gen": {
+      "command": "npx",
+      "args": ["-y", "@inferai/image-gen-mcp"],
+      "env": {
+        "IMAGE_MCP_OPENAI_API_KEY": "sk-...",
+        "IMAGE_MCP_ZHIPU_API_KEY": "..."
+      }
+    }
+  }
+}
+```
+
+Providers are **auto-discovered**: a provider is enabled iff its API key is configured — no provider list to maintain. Set `IMAGE_MCP_<ID>_API_KEY` (or `--<id>-api-key`) for exactly the providers you want.
 
 ## Configuration
 
@@ -51,7 +69,7 @@ All settings follow a three-layer override: **defaults → `IMAGE_MCP_*` env var
 
 | Setting | Env var | args | Default |
 |---------|---------|------|---------|
-| Provider list (order = default priority) | `IMAGE_MCP_PROVIDERS` | `--providers` | Auto-discover providers with a configured key |
+| Enabled providers | — (auto-discovery) | — | Every provider with a configured API key, in registry order |
 | Max retries (within one provider) | `IMAGE_MCP_MAX_RETRIES` | `--max-retries` | `2` |
 | Max failovers | `IMAGE_MCP_MAX_DEGRADATIONS` | `--max-degradations` | `1` |
 | Retry backoff base (ms, exponential) | `IMAGE_MCP_RETRY_BACKOFF_MS` | `--retry-backoff-ms` | `1000` |
@@ -66,7 +84,7 @@ All settings follow a three-layer override: **defaults → `IMAGE_MCP_*` env var
 | `IMAGE_MCP_<ID>_API_KEY` | `--<id>-api-key` | Required (provider is disabled without it) |
 | `IMAGE_MCP_<ID>_BASE_URL` | `--<id>-base-url` | Overrides the default endpoint |
 | `IMAGE_MCP_<ID>_MODEL` | `--<id>-model` | Overrides the default model |
-| `IMAGE_MCP_<ID>_PRIORITY` | `--<id>-priority` | Lower number wins; defaults to list order |
+| `IMAGE_MCP_<ID>_PRIORITY` | `--<id>-priority` | Lower number wins; defaults to registry order |
 
 | ID | Default endpoint | Default model | Notes |
 |----|------------------|---------------|-------|
@@ -82,7 +100,6 @@ All settings follow a three-layer override: **defaults → `IMAGE_MCP_*` env var
 Example (env vars):
 
 ```bash
-export IMAGE_MCP_PROVIDERS=openai,zhipu,google
 export IMAGE_MCP_OPENAI_API_KEY=sk-...
 export IMAGE_MCP_ZHIPU_API_KEY=...
 export IMAGE_MCP_GOOGLE_API_KEY=...
@@ -94,7 +111,6 @@ Example (args override):
 
 ```bash
 npx @inferai/image-gen-mcp \
-  --providers=openai,zhipu \
   --openai-api-key=sk-... \
   --zhipu-api-key=... \
   --max-retries=0 \

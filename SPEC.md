@@ -148,11 +148,10 @@ total failure → throw a final error whose message contains the full attempt su
 
 | Setting | Env var | args | Default |
 |---------|---------|------|---------|
-| Enabled provider list (order = default priority) | `IMAGE_MCP_PROVIDERS` (comma-separated) | `--providers=...` | empty (at least one required or startup fails) |
-| Provider API key | `IMAGE_MCP_<ID>_API_KEY` | `--<id>-api-key=...` | none (provider without a key is disabled) |
+| Provider API key | `IMAGE_MCP_<ID>_API_KEY` | `--<id>-api-key=...` | none (provider without a key is disabled; auto-discovery: set the key to enable) |
 | Provider baseUrl | `IMAGE_MCP_<ID>_BASE_URL` | `--<id>-base-url=...` | official default per provider |
 | Provider default model | `IMAGE_MCP_<ID>_MODEL` | `--<id>-model=...` | per-provider default (set against official docs at first implementation) |
-| Provider priority | `IMAGE_MCP_<ID>_PRIORITY` | `--<id>-priority=...` | `PROVIDERS` list order; lower number wins |
+| Provider priority | `IMAGE_MCP_<ID>_PRIORITY` | `--<id>-priority=...` | registry order; lower number wins |
 | Max retries | `IMAGE_MCP_MAX_RETRIES` | `--max-retries=...` | 2 |
 | Max failovers | `IMAGE_MCP_MAX_DEGRADATIONS` | `--max-degradations=...` | 1 |
 | Retry backoff base ms | `IMAGE_MCP_RETRY_BACKOFF_MS` | `--retry-backoff-ms=...` | 1000 |

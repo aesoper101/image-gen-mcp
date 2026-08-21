@@ -25,16 +25,15 @@ pnpm install && pnpm build
 node dist/index.js
 ```
 
-MCP 客户端配置示例(Claude Code `~/.claude.json` / 桌面端):
+以 stdio MCP 服务器方式配置到客户端。**Windows** — Claude Desktop:`%APPDATA%\Claude\claude_desktop_config.json`;Claude Code:`~/.claude.json`(`C:\Users\<用户名>\.claude.json`)。`cmd /c` 是解析 `npx` 所必需的:
 
 ```json
 {
   "mcpServers": {
     "image-gen": {
-      "command": "npx",
-      "args": ["@inferai/image-gen-mcp"],
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@inferai/image-gen-mcp"],
       "env": {
-        "IMAGE_MCP_PROVIDERS": "openai,zhipu",
         "IMAGE_MCP_OPENAI_API_KEY": "sk-...",
         "IMAGE_MCP_ZHIPU_API_KEY": "..."
       }
@@ -42,6 +41,25 @@ MCP 客户端配置示例(Claude Code `~/.claude.json` / 桌面端):
   }
 }
 ```
+
+**Linux / macOS** — Claude Desktop:macOS 为 `~/Library/Application Support/Claude/claude_desktop_config.json`,Linux 为 `~/.config/Claude/claude_desktop_config.json`;Claude Code:`~/.claude.json`:
+
+```json
+{
+  "mcpServers": {
+    "image-gen": {
+      "command": "npx",
+      "args": ["-y", "@inferai/image-gen-mcp"],
+      "env": {
+        "IMAGE_MCP_OPENAI_API_KEY": "sk-...",
+        "IMAGE_MCP_ZHIPU_API_KEY": "..."
+      }
+    }
+  }
+}
+```
+
+供应商为**自动发现**:配置了哪个 API key 就启用哪个供应商,无需维护供应商列表。只需为需要的供应商设置 `IMAGE_MCP_<ID>_API_KEY`(或 `--<id>-api-key`)。
 
 ## 配置
 
@@ -51,7 +69,7 @@ MCP 客户端配置示例(Claude Code `~/.claude.json` / 桌面端):
 
 | 配置 | 环境变量 | args | 默认 |
 |------|----------|------|------|
-| 供应商列表(顺序即默认优先级) | `IMAGE_MCP_PROVIDERS` | `--providers` | 自动发现已配置 key 的供应商 |
+| 启用的供应商 | —(自动发现) | — | 所有已配置 API key 的供应商,按注册表顺序 |
 | 最大重试次数(单供应商内) | `IMAGE_MCP_MAX_RETRIES` | `--max-retries` | `2` |
 | 最大降级次数 | `IMAGE_MCP_MAX_DEGRADATIONS` | `--max-degradations` | `1` |
 | 重试退避基数(ms,指数递增) | `IMAGE_MCP_RETRY_BACKOFF_MS` | `--retry-backoff-ms` | `1000` |
@@ -66,7 +84,7 @@ MCP 客户端配置示例(Claude Code `~/.claude.json` / 桌面端):
 | `IMAGE_MCP_<ID>_API_KEY` | `--<id>-api-key` | 必填(未配置则该供应商禁用) |
 | `IMAGE_MCP_<ID>_BASE_URL` | `--<id>-base-url` | 覆盖默认端点 |
 | `IMAGE_MCP_<ID>_MODEL` | `--<id>-model` | 覆盖默认模型 |
-| `IMAGE_MCP_<ID>_PRIORITY` | `--<id>-priority` | 数字小者优先;缺省按列表顺序 |
+| `IMAGE_MCP_<ID>_PRIORITY` | `--<id>-priority` | 数字小者优先;缺省按注册表顺序 |
 
 | ID | 默认端点 | 默认模型 | 说明 |
 |----|----------|----------|------|
@@ -82,7 +100,6 @@ MCP 客户端配置示例(Claude Code `~/.claude.json` / 桌面端):
 示例(环境变量):
 
 ```bash
-export IMAGE_MCP_PROVIDERS=openai,zhipu,google
 export IMAGE_MCP_OPENAI_API_KEY=sk-...
 export IMAGE_MCP_ZHIPU_API_KEY=...
 export IMAGE_MCP_GOOGLE_API_KEY=...
@@ -94,7 +111,6 @@ export IMAGE_MCP_MAX_DEGRADATIONS=2
 
 ```bash
 npx @inferai/image-gen-mcp \
-  --providers=openai,zhipu \
   --openai-api-key=sk-... \
   --zhipu-api-key=... \
   --max-retries=0 \

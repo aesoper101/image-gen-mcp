@@ -36,8 +36,9 @@ const ENV_PREFIX = 'IMAGE_MCP_';
 
 /**
  * Three-layer override: default -> environment variables -> CLI args (args win).
- * - Global: IMAGE_MCP_PROVIDERS / --providers, IMAGE_MCP_MAX_RETRIES / --max-retries, etc.
+ * - Global: IMAGE_MCP_MAX_RETRIES / --max-retries, etc.
  * - Per-provider: IMAGE_MCP_<ID>_API_KEY / --<id>-api-key, ..._BASE_URL, ..._MODEL, ..._PRIORITY
+ * Providers are auto-discovered: a provider is enabled iff its API key is configured.
  */
 export function buildConfig(env: EnvSource, argv: string[]): Config {
   const args = parseArgs(argv);
@@ -108,27 +109,14 @@ export function buildConfig(env: EnvSource, argv: string[]): Config {
 }
 
 /**
- * Assemble enabled providers.
- * - Only providers with an apiKey are enabled; when IMAGE_MCP_PROVIDERS / --providers
- *   is set explicitly, the list filters them
- * - priority: explicit settings win; otherwise list order, then registry order for unlisted ids
+ * Assemble enabled providers by auto-discovery: a provider is enabled iff its
+ * API key is configured (IMAGE_MCP_<ID>_API_KEY / --<id>-api-key). No list to
+ * maintain — the registry order is the default priority.
  */
 export function buildProviders(
   env: EnvSource,
   args: Record<string, string>,
 ): ProviderConfig[] {
-  const listed = splitList(
-    args.providers ?? env[`${ENV_PREFIX}PROVIDERS`] ?? '',
-  );
-  if (listed.length > 0) {
-    const unknown = listed.filter((id) => !REGISTRY.some((e) => e.id === id));
-    if (unknown.length > 0) {
-      throw new ConfigError(
-        `Unknown providers: ${unknown.join(', ')}; available: ${REGISTRY.map((e) => e.id).join(', ')}`,
-      );
-    }
-  }
-
   const out: ProviderConfig[] = [];
   for (const entry of REGISTRY) {
     const read = (argKey: string, envSuffix: string): string | undefined => {
@@ -156,20 +144,11 @@ export function buildProviders(
               0,
               1000,
             )
-          : listed.includes(entry.id)
-            ? listed.indexOf(entry.id)
-            : 100 + REGISTRY.indexOf(entry),
+          : 100 + REGISTRY.indexOf(entry),
     });
   }
 
   return out.sort((a, b) => a.priority - b.priority);
-}
-
-function splitList(value: string): string[] {
-  return value
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean);
 }
 
 function parseIntStrict(

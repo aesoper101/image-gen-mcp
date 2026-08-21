@@ -2,8 +2,8 @@ import { expect, test } from '@rstest/core';
 import { parseArgs } from '../src/config/args';
 
 test('parses --key=value form', () => {
-  expect(parseArgs(['--providers=openai,zhipu'])).toEqual({
-    providers: 'openai,zhipu',
+  expect(parseArgs(['--openai-api-key=sk-test'])).toEqual({
+    'openai-api-key': 'sk-test',
   });
 });
 

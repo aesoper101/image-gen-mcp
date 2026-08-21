@@ -66,43 +66,29 @@ test('invalid numbers throw ConfigError naming the variable', () => {
   ).toThrow(/output-mode/);
 });
 
-test('providers sort by priority ascending; list order used when priority unset', () => {
+test('providers sort by priority ascending; registry order used when priority unset', () => {
   const env = {
-    IMAGE_MCP_PROVIDERS: 'zhipu,openai',
     IMAGE_MCP_OPENAI_API_KEY: 'sk-1',
     IMAGE_MCP_ZHIPU_API_KEY: 'sk-2',
-  };
-  const cfg = buildConfig(env, []);
-  expect(cfg.providers.map((p) => p.id)).toEqual(['zhipu', 'openai']);
-});
-
-test('explicit priority overrides list order', () => {
-  const env = {
-    IMAGE_MCP_PROVIDERS: 'zhipu,openai',
-    IMAGE_MCP_OPENAI_API_KEY: 'sk-1',
-    IMAGE_MCP_ZHIPU_API_KEY: 'sk-2',
-    IMAGE_MCP_OPENAI_PRIORITY: '0',
   };
   const cfg = buildConfig(env, []);
   expect(cfg.providers.map((p) => p.id)).toEqual(['openai', 'zhipu']);
 });
 
-test('providers without an api key are skipped in list mode', () => {
+test('explicit priority overrides registry order', () => {
   const env = {
-    IMAGE_MCP_PROVIDERS: 'openai,google,zhipu',
-    IMAGE_MCP_OPENAI_API_KEY: 'sk',
+    IMAGE_MCP_OPENAI_API_KEY: 'sk-1',
+    IMAGE_MCP_ZHIPU_API_KEY: 'sk-2',
+    IMAGE_MCP_OPENAI_PRIORITY: '10',
+    IMAGE_MCP_ZHIPU_PRIORITY: '0',
   };
   const cfg = buildConfig(env, []);
-  expect(cfg.providers.map((p) => p.id)).toEqual(['openai']);
+  expect(cfg.providers.map((p) => p.id)).toEqual(['zhipu', 'openai']);
 });
 
-test('unknown providers in list mode throw', () => {
-  expect(() =>
-    buildConfig(
-      { IMAGE_MCP_PROVIDERS: 'openai,foo', IMAGE_MCP_OPENAI_API_KEY: 'sk' },
-      [],
-    ),
-  ).toThrow(/Unknown providers: foo/);
+test('providers without an api key are skipped by auto-discovery', () => {
+  const cfg = buildConfig({ IMAGE_MCP_OPENAI_API_KEY: 'sk' }, []);
+  expect(cfg.providers.map((p) => p.id)).toEqual(['openai']);
 });
 
 test('providers without a default model (openrouter) do not require model', () => {
