@@ -1,0 +1,9 @@
+allowBuilds:
+  '@google/genai': true
+  protobufjs: true
+  simple-git-hooks: true
+minimumReleaseAgeExclude:
+  - '@anthropic-ai/sdk@0.120.0'
+  - '@rstest/adapter-rslib@0.11.9'
+  - '@rstest/core@0.11.9'
+  - '@rstest/coverage-v8@0.11.9'
