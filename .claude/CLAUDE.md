@@ -10,7 +10,7 @@ Multi-provider AI image generation MCP server (stdio). Design document: SPEC.md.
 - `pnpm format` — biome format --write
 - `node scripts/smoke.mjs` — stdio end-to-end smoke test (requires IMAGE_MCP_*_API_KEY)
 - `pnpm exec rstest --coverage` — coverage (thresholds in rstest.config.ts)
-- `pnpm exec biome ...` — always via pnpm exec: `npx biome` / `npm view` are blocked by devEngines (pnpm-only project)
+- `pnpm exec biome ...` — always via pnpm exec (pnpm-only project, pinned via `packageManager` in package.json)
 
 ## Architecture
 
