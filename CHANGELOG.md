@@ -1,5 +1,11 @@
 # @inferai/image-gen-mcp
 
+## 1.1.1
+
+### Patch Changes
+
+- [`86641c1`](https://github.com/aesoper101/image-gen-mcp/commit/86641c1c1a73d449a5324814d2e9873d684597b0) Thanks [@aesoper101](https://github.com/aesoper101)! - Replace `devEngines.packageManager` (which made npm refuse to install the package with `EBADDEVENGINES`) with the standard `packageManager` field; keep `devEngines.runtime` for Node version selection. npm/npx consumers can now install and run the server again.
+
 ## 1.1.0
 
 ### Minor Changes
