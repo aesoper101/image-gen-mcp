@@ -33,12 +33,7 @@
   "bin": {
     "image-gen-mcp": "./dist/index.js"
   },
-  "files": [
-    "dist",
-    "README.md",
-    "README.zh-CN.md",
-    ".env.example"
-  ],
+  "files": ["dist", "README.md", "README.zh-CN.md", ".env.example"],
   "scripts": {
     "build": "rslib",
     "changeset": "changeset",
