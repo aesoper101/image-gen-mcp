@@ -1,5 +1,11 @@
 # @inferai/image-gen-mcp
 
+## 1.1.2
+
+### Patch Changes
+
+- [`c5ccc48`](https://github.com/aesoper101/image-gen-mcp/commit/c5ccc485d16997513a1a009977f9f56838bc449e) Thanks [@aesoper101](https://github.com/aesoper101)! - Fix the LICENSE copyright line: replace the `[2026] [@inferai]` placeholder with the actual holder `2026 aesoper`.
+
 ## 1.1.1
 
 ### Patch Changes
